@@ -22,20 +22,16 @@ Enemy.prototype.update = function(dt) {
         this.x = 0;
     }
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-
+    //handling collision
     currEnemyImageWidth = Resources.get(this.sprite).width;
     currEnemyImageHeight = Resources.get(this.sprite).height;
     playerImageWidth = Resources.get(player.sprite).width;
     playerImageHeight = Resources.get(player.sprite).height;
-    console.log(this.x + " " + this.y + " " + player.x + " " + player.y);
     
-    if((this.x + currEnemyImageWidth >= player.x && ((this.y + currEnemyImageHeight >= player.y) || (this.y <= player.y + playerImageHeight))) || 
-        (this.x <= player.x + playerImageWidth && ((this.y + currEnemyImageHeight >= player.y) || (this.y <= player.y + playerImageHeight)))){
-        
+    if(this.x + currEnemyImageWidth >= player.x && this.x <= player.x + playerImageWidth && 
+        this.y + currEnemyImageHeight >= player.y && this.y <= player.y + playerImageHeight){    
             player.x = 200;
-            player.y = 360;
+            player.y = 440;
     }
 };
 
@@ -58,36 +54,62 @@ Enemy.prototype.setMovement = function(mov){
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 200;
-    this.y = 360;
+    this.y = 440;
     this.movement = 20;
 };
 
-Player.prototype.update = function(input) {
-    if(input == 'left'){
-        this.x -= this.movement;
-    }else if(input ==  'up'){
-        this.y -= this.movement;
-    }else if(input ==  'right'){
-        this.x += this.movement;
-    }else if(input ==  'down'){
-        this.y += this.movement;
-    }else{
-
-    }
-
-    if(this.y <= 0){
-        this.y = ctx.canvas.height/1.5;
-    }
+Player.prototype.update = function() {
+    
 };
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+Player.prototype.resetPlayer = function() {
+    if(this.y <= 40){
+        this.y = ctx.canvas.height/1.3;
+    }
+};
+
+Player.prototype.limitMovement = function() {
+    //if the player is at the bottom of the canvas
+    if(this.y >= ctx.canvas.height/1.3){
+        this.y = ctx.canvas.height/1.3;
+    }
+
+    //if the player is at the exterme left of the canvas
+    if(this.x <= ctx.canvas.width/40){
+        this.x = ctx.canvas.width/40;
+    }
+
+    //if the player is at the exterme right of the canvas
+    if(this.x >= ctx.canvas.width/1.2){
+        this.x = ctx.canvas.width/1.2;
+    }
+};
+
 
 Player.prototype.handleInput = function(keyInput) {
-    this.update(keyInput);
+    if(keyInput == 'left'){
+        this.x -= this.movement;
+    }else if(keyInput ==  'up'){
+        this.y -= this.movement;
+    }else if(keyInput ==  'right'){
+        this.x += this.movement;
+    }else if(keyInput ==  'down'){
+        this.y += this.movement;
+    }else{
+
+    }
+
+    //Check boundary condition and limit movement
+    this.limitMovement();
+
+    //reset player
+    this.resetPlayer();
     
+
 };
 
 
@@ -95,26 +117,26 @@ Player.prototype.handleInput = function(keyInput) {
 // Place all enemy objects in an array called allEnemies
 allEnemies = [];
 
-/*enemy1 = new Enemy();
-enemy1.setY(60);
-enemy1.setMovement(60);
+enemy1 = new Enemy();
+enemy1.setY(300);
+enemy1.setMovement(50);
 
 enemy2 = new Enemy();
-enemy2.setY(145);
-enemy2.setMovement(40);*/
+enemy2.setY(135);
+enemy2.setMovement(30);
 
 enemy3 = new Enemy();
-enemy3.setY(230);
-enemy3.setMovement(80);
+enemy3.setY(215);
+enemy3.setMovement(70);
 
-/*enemy4 = new Enemy();
-enemy4.setY(145);
-enemy4.setMovement(110);*/
+enemy4 = new Enemy();
+enemy4.setY(135);
+enemy4.setMovement(110);
 
-//allEnemies.push(enemy1);
-//allEnemies.push(enemy2);
+allEnemies.push(enemy1);
+allEnemies.push(enemy2);
 allEnemies.push(enemy3);
-//allEnemies.push(enemy4);
+allEnemies.push(enemy4);
 
 // Place the player object in a variable called player
 player = new Player();
