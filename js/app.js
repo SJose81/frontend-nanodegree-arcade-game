@@ -1,7 +1,6 @@
-// Enemies our player must avoid
+// Enemy class which has data for image, x and y co-ordinates and speed 
 var Enemy = function() {
     // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -22,12 +21,13 @@ Enemy.prototype.update = function(dt) {
         this.x = 0;
     }
 
-    //handling collision
+    //image width and height to handle collision
     currEnemyImageWidth = Resources.get(this.sprite).width;
     currEnemyImageHeight = Resources.get(this.sprite).height;
     playerImageWidth = Resources.get(player.sprite).width;
     playerImageHeight = Resources.get(player.sprite).height;
     
+    //Check if collision has occured and reset the player position in case of a collision
     if(this.x + currEnemyImageWidth >= player.x && this.x <= player.x + playerImageWidth && 
         this.y + currEnemyImageHeight >= player.y && this.y <= player.y + playerImageHeight){    
             player.x = 200;
@@ -48,48 +48,57 @@ Enemy.prototype.setMovement = function(mov){
     this.movement = mov;
 };
 
-// Now write your own player class
+// Player class which has data for image, x and y co-ordinates and speed
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
     this.sprite = 'images/char-boy.png';
-    this.x = 200;
-    this.y = 440;
+    this.initXPos = 220;
+    this.initYPos = 440;
+    
+    this.x = this.initXPos;
+    this.y = this.initYPos;
     this.movement = 20;
 };
 
+//This method is not required in the code, functionality taken care by other methods.
 Player.prototype.update = function() {
     
 };
 
+// Draw the player on the screen
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+//Reset the player once it reaches the water (top of the canvas)
 Player.prototype.resetPlayer = function() {
-    if(this.y <= 40){
-        this.y = ctx.canvas.height/1.3;
+    if(this.y <= ctx.canvas.height/15){
+        this.y = this.initYPos;
+        this.x = this.initXPos;
     }
+    
 };
 
+//Limit movement so that player does not move off the screen
 Player.prototype.limitMovement = function() {
-    //if the player is at the bottom of the canvas
-    if(this.y >= ctx.canvas.height/1.3){
-        this.y = ctx.canvas.height/1.3;
+    //if the player is at the bottom of the canvas, the player stays the same spot
+    if(this.y >= this.initYPos){
+        this.y = this.initYPos;
     }
 
-    //if the player is at the exterme left of the canvas
+    //if the player is at the exterme left of the canvas, the player stays the same spot
     if(this.x <= ctx.canvas.width/40){
         this.x = ctx.canvas.width/40;
     }
 
-    //if the player is at the exterme right of the canvas
+    //if the player is at the exterme right of the canvas, the player stays the same spot
     if(this.x >= ctx.canvas.width/1.2){
         this.x = ctx.canvas.width/1.2;
     }
 };
 
-
+//Based on the key inut, the player will move
 Player.prototype.handleInput = function(keyInput) {
     if(keyInput == 'left'){
         this.x -= this.movement;
@@ -108,37 +117,39 @@ Player.prototype.handleInput = function(keyInput) {
 
     //reset player
     this.resetPlayer();
-    
-
 };
 
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
+//An array called allEnemies, into which all the enemy objects will be pushed
 allEnemies = [];
 
+//creating an new eneny object 'enemy1' and setting its y co-ordinate and movement
 enemy1 = new Enemy();
 enemy1.setY(300);
 enemy1.setMovement(50);
 
+//creating an new eneny object 'enemy2' and setting its y co-ordinate and movement
 enemy2 = new Enemy();
 enemy2.setY(135);
 enemy2.setMovement(30);
 
+//creating an new eneny object 'enemy3' and setting its y co-ordinate and movement
 enemy3 = new Enemy();
 enemy3.setY(215);
 enemy3.setMovement(70);
 
+//creating an new eneny object 'enemy4' and setting its y co-ordinate and movement
 enemy4 = new Enemy();
 enemy4.setY(135);
 enemy4.setMovement(110);
 
+//Pushing the enemy objects in to the allEnemies array
 allEnemies.push(enemy1);
 allEnemies.push(enemy2);
 allEnemies.push(enemy3);
 allEnemies.push(enemy4);
 
-// Place the player object in a variable called player
+//Place the player object in a variable called player
 player = new Player();
 
 
